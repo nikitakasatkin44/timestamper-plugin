@@ -70,7 +70,7 @@ public class TimestampFormatProvider {
 
     String mode = null;
     Boolean local = null;
-    String offset = null;
+    String offset = "-10800000";
 
     Cookie[] cookies = request.getCookies();
     if (cookies != null) {
@@ -81,10 +81,6 @@ public class TimestampFormatProvider {
 
         if (local == null && "jenkins-timestamper-local".equals(cookie.getName())) {
           local = Boolean.valueOf(cookie.getValue());
-        }
-
-        if (offset == null && "jenkins-timestamper-offset".equals(cookie.getName())) {
-          offset = cookie.getValue();
         }
       }
     }
