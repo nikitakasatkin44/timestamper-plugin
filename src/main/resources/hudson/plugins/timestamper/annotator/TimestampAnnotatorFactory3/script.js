@@ -33,6 +33,7 @@ that the changes take effect when upgrading the Timestamper plugin.
 // http://googleblog.blogspot.com.au/2007/07/cookies-expiring-sooner-to-improve.html
 
 var cookieName = 'jenkins-timestamper';
+var isFrame = isIframe();
 
 function init() {
     // Only one of these modes can be checked at a time.
@@ -147,11 +148,23 @@ function displaySettings() {
         }
     }
 
+    if (isFrame === true) {
+        return;
+    }
+
     new Ajax.Updater(
         element,
         rootURL + '/extensionList/hudson.console.ConsoleAnnotatorFactory/hudson.plugins.timestamper.annotator.TimestampAnnotatorFactory3/usersettings',
         { insertion: Insertion.Bottom, onComplete: init }
     );
+}
+
+function isIframe () {
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
 }
 
 function onLoad() {
@@ -183,11 +196,13 @@ document.cookie = 'jenkins-timestamper-local=' + attributes;
 document.cookie = 'jenkins-timestamper-offset=' + attributes;
 
 // Make browser time zone available to the server
-var offset = getCookie('offset');
-var newOffset = (new Date().getTimezoneOffset() * 60 * 1000).toString();
-if (newOffset !== offset) {
-    setCookie('offset', newOffset);
-    document.location.reload();
+if (isFrame !== true) {
+    var offset = getCookie('offset');
+    var newOffset = (new Date().getTimezoneOffset() * 60 * 1000).toString();
+    if (newOffset !== offset) {
+        setCookie('offset', newOffset);
+        document.location.reload();
+    }
 }
 
 // Run on page load
