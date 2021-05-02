@@ -182,6 +182,14 @@ document.cookie = 'jenkins-timestamper=' + attributes;
 document.cookie = 'jenkins-timestamper-local=' + attributes;
 document.cookie = 'jenkins-timestamper-offset=' + attributes;
 
+// Make browser time zone available to the server
+var offset = getCookie('offset');
+var newOffset = (new Date().getTimezoneOffset() * 60 * 1000).toString();
+if (newOffset !== offset) {
+    setCookie('offset', newOffset);
+    document.location.reload();
+}
+
 // Run on page load
 if (document.readyState === 'complete') {
     onLoad();
